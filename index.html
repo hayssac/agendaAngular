@@ -1,0 +1,118 @@
+<html ng-app="listaTelefonica">
+<head>
+	<meta charset="utf-8">
+	<title>Agenda de Contatos</title>
+	<link rel="stylesheet" type="text/css" href="bootstrap/bootstrap.css">
+	<style>
+		.jumbotron {
+			width: 400px;
+			text-align: center;
+			margin-top: 20px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		.table {
+			margin-top: 20px;
+		}
+		.form-control {
+			margin-bottom: 5px;
+		}
+		.selecionado {
+			background-color: pink;
+		}
+		.negrito {
+			font-weight: bold;
+		}
+	</style>
+	<script src="angular/angular.js"></script>
+	<script src="angular/angular-route.js"></script>
+	<script>
+		var lista = angular.module("listaTelefonica", ["ngRoute"]);
+		lista.controller("listaTelefonicaCtrl", function ($scope) {
+			$scope.app = "Lista Telefônica";
+			$scope.contatos = [
+				{nome: "João", telefone: "97864432"},
+				{nome: "Maria", telefone: "9989654"},
+				{nome: "Antonio", telefone: "9743213"}
+			];
+			$scope.operadoras = [
+				{nome: "Oi", codigo: 14, categoria: "Celular"},
+				{nome: "Vivo", codigo: 15, categoria: "Celular"},
+				{nome: "Tim", codigo: 41, categoria: "Celular"},
+			];
+			$scope.adicionarContato = function (contato) {
+				$scope.contatos.push(angular.copy(contato));
+				delete $scope.contato;
+			};
+			$scope.isContatoSelecionado = function (contatos) {
+				return contatos.some(function (contato) {
+					return contato.selecionado;
+				});
+			};
+
+
+		});
+		lista.controller("listaHttpCtrl", function($scope, $http) {
+			$http.get("exemplo.html")
+			.then(function(response) {
+				$scope.httpInteracao = response.data;
+				$scope.statuscode = response.status;
+				$scope.statustext = response.statusText;
+			});
+		});
+		lista.config(function($routeProvider) {
+		$routeProvider
+			.when("/vermelho", {
+					templateUrl : "./vermelho.html"
+			})
+		.when("/verde", {
+					templateUrl : "./verde.html"
+			})
+			.when("/azul", {
+					templateUrl : "./azul.html"
+			});
+		});
+	</script>
+</head>
+<body ng-controller="listaTelefonicaCtrl">
+		<div  class="jumbotron">
+			<h3>{{app}}</h3>
+			<input class="form-control" type="text" ng-model="busca"/>
+			<table ng-show="contatos.length > 0" class="table">
+				<tr>
+					<th></th>
+					<th>Nome</th>
+					<th>Telefone</th>
+					<th>Operadora</th>
+					<th></th>
+				</tr>
+				<tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos | filter: busca">
+					<td><input type="checkbox" ng-model="contato.selecionado"/></td>
+					<td>{{contato.nome}}</td>
+					<td>{{contato.telefone}}</td>
+					<td>{{contato.operadora.nome}}</td>
+				</tr>
+			</table>
+			<hr/>
+			<input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome"/>
+			<input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone"/>
+			<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in operadoras">
+				<option value="">Selecione uma operadora</option>
+			</select>
+			<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)">Adicionar Contato</button>
+		</div>
+		<div ng-include="'footer.html'"></div>
+	</div>
+	<!-- <div ng-controller="listaHttpCtrl" style="text-align: center">
+		<h5>{{ httpInteracao }}</h5>
+		<h5>Status: {{ statuscode }}</h5>
+		<h5>Texto do status: {{ statustext }}</h5>
+	</div>
+	<div style="text-align: center">
+		<a href="#vermelho">Vermelho</a>
+		<a href="#verde">Verde</a>
+		<a href="#azul">Azul</a>
+		<div ng-view=""></div>
+	</div> -->
+</body>
+</html>
