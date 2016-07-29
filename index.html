@@ -43,14 +43,19 @@
 			$scope.adicionarContato = function (contato) {
 				$scope.contatos.push(angular.copy(contato));
 				delete $scope.contato;
+				$scope.contatosForm.$setPristine();
 			};
 			$scope.isContatoSelecionado = function (contatos) {
 				return contatos.some(function (contato) {
 					return contato.selecionado;
 				});
 			};
-
-
+			$scope.excluirContato = function(contatos) {
+				$scope.contatos = contatos.filter(function(contato){
+					if(!contato.selecionado)
+						return contato;
+				})
+			}
 		});
 		lista.controller("listaHttpCtrl", function($scope, $http) {
 			$http.get("exemplo.html")
@@ -94,24 +99,30 @@
 				</tr>
 			</table>
 			<hr/>
-			<input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome"/>
-			<input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone"/>
+			<form name="contatosForm">
+			<input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome" ng-required="true"/>
+			<input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone" ng-required="true"/>
 			<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome for operadora in operadoras">
 				<option value="">Selecione uma operadora</option>
 			</select>
-			<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)">Adicionar Contato</button>
+			</form>
+			<div class="alert alert-danger" ng-show="contatosForm.$dirty">
+			<p>Preencha nome e telefone</p>
+			</div>
+			<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)" ng-disabled="contatosForm.$invalid">Adicionar Contato</button>
+			<button class="btn btn-danger btn-block" ng-click="excluirContato(contatos)" >Excluir Contatos</button>
 		</div>
 		<div ng-include="'footer.html'"></div>
 	</div>
-	<!-- <div ng-controller="listaHttpCtrl" style="text-align: center">
+	<div ng-controller="listaHttpCtrl" style="text-align: center">
 		<h5>{{ httpInteracao }}</h5>
 		<h5>Status: {{ statuscode }}</h5>
 		<h5>Texto do status: {{ statustext }}</h5>
 	</div>
 	<div style="text-align: center">
-		<a href="#vermelho">Vermelho</a>
-		<a href="#verde">Verde</a>
-		<a href="#azul">Azul</a>
+		<a href="#vermelho">R</a>
+		<a href="#verde">G</a>
+		<a href="#azul">B</a>
 		<div ng-view=""></div>
 	</div> -->
 </body>
