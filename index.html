@@ -2,82 +2,8 @@
 <head>
 	<meta charset="utf-8">
 	<title>Agenda de Contatos</title>
-	<link rel="stylesheet" type="text/css" href="bootstrap/bootstrap.css">
-	<style>
-		.jumbotron {
-			width: 400px;
-			text-align: center;
-			margin-top: 20px;
-			margin-left: auto;
-			margin-right: auto;
-		}
-		.table {
-			margin-top: 20px;
-		}
-		.form-control {
-			margin-bottom: 5px;
-		}
-		.selecionado {
-			background-color: pink;
-		}
-		.negrito {
-			font-weight: bold;
-		}
-	</style>
-	<script src="angular/angular.js"></script>
-	<script src="angular/angular-route.js"></script>
-	<script>
-		var lista = angular.module("listaTelefonica", ["ngRoute"]);
-		lista.controller("listaTelefonicaCtrl", function ($scope) {
-			$scope.app = "Lista Telefônica";
-			$scope.contatos = [
-				{nome: "João", telefone: "97864432"},
-				{nome: "Maria", telefone: "9989654"},
-				{nome: "Antonio", telefone: "9743213"}
-			];
-			$scope.operadoras = [
-				{nome: "Oi", codigo: 14, categoria: "Celular"},
-				{nome: "Vivo", codigo: 15, categoria: "Celular"},
-				{nome: "Tim", codigo: 41, categoria: "Celular"},
-			];
-			$scope.adicionarContato = function (contato) {
-				$scope.contatos.push(angular.copy(contato));
-				delete $scope.contato;
-				$scope.contatosForm.$setPristine();
-			};
-			$scope.isContatoSelecionado = function (contatos) {
-				return contatos.some(function (contato) {
-					return contato.selecionado;
-				});
-			};
-			$scope.excluirContato = function(contatos) {
-				$scope.contatos = contatos.filter(function(contato){
-					if(!contato.selecionado)
-						return contato;
-				})
-			}
-		});
-		lista.controller("listaHttpCtrl", function($scope, $http) {
-			$http.get("exemplo.html")
-			.then(function(response) {
-				$scope.httpInteracao = response.data;
-				$scope.statuscode = response.status;
-				$scope.statustext = response.statusText;
-			});
-		});
-		lista.config(function($routeProvider) {
-		$routeProvider
-			.when("/vermelho", {
-					templateUrl : "./vermelho.html"
-			})
-		.when("/verde", {
-					templateUrl : "./verde.html"
-			})
-			.when("/azul", {
-					templateUrl : "./azul.html"
-			});
-		});
-	</script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body ng-controller="listaTelefonicaCtrl">
 		<div  class="jumbotron">
@@ -112,7 +38,7 @@
 			<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)" ng-disabled="contatosForm.$invalid">Adicionar Contato</button>
 			<button class="btn btn-danger btn-block" ng-click="excluirContato(contatos)" >Excluir Contatos</button>
 		</div>
-		<div ng-include="'footer.html'"></div>
+		<div ng-include="'./components/footer.html'"></div>
 	</div>
 	<div ng-controller="listaHttpCtrl" style="text-align: center">
 		<h5>{{ httpInteracao }}</h5>
@@ -124,6 +50,10 @@
 		<a href="#verde">G</a>
 		<a href="#azul">B</a>
 		<div ng-view=""></div>
-	</div> -->
+	</div> 
+
+	<script src="js/angular.js"></script>
+	<script src="js/angular-route.js"></script>
+	<script src="js/controller.js">	</script>
 </body>
 </html>
